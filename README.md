@@ -1,27 +1,25 @@
-EmailService
+# EmailService
+
 A robust and modular Node.js-based email delivery service built with extensibility and reliability in mind. This service integrates multiple mock email providers and includes core reliability features such as retry mechanisms, provider fallback, idempotency, rate limiting, and status tracking. It is suitable for demonstration, testing, or as a blueprint for production-level implementations.
 
-Features
-Retry with Exponential Backoff: Ensures reliability by attempting retries with increasing delays.
+---
 
-Provider Fallback: Automatically switches to a secondary provider if the primary fails.
+## Features
 
-Idempotency: Prevents duplicate email sending when the same request is retried.
+* **Retry with Exponential Backoff** – Ensures reliability by attempting retries with increasing delays.
+* **Provider Fallback** – Automatically switches to a secondary provider if the primary fails.
+* **Idempotency** – Prevents duplicate email sending when the same request is retried.
+* **Basic Rate Limiting** – Restricts sending volume to avoid abuse and control load.
+* **Status Tracking** – Provides a way to query the status of past send attempts.
+* **Queue System** – Tasks are processed sequentially to simulate load-handling.
+* **Circuit Breaker Pattern (Basic)** – Helps avoid hammering failing services.
+* **Simple Logging** – Outputs consistent and timestamped logs for observability.
 
-Basic Rate Limiting: Restricts sending volume to avoid abuse and control load.
+---
 
-Status Tracking: Provides a way to query the status of past send attempts.
+## Project Structure
 
-Queue System: Tasks are processed sequentially to simulate load-handling.
-
-Circuit Breaker Pattern (Basic): Helps avoid hammering failing services.
-
-Simple Logging: Outputs consistent and timestamped logs for observability.
-
-Project Structure
-bash
-Copy
-Edit
+```
 EmailService/
 ├── src/
 │   ├── index.js               # Entry point and Express server
@@ -36,90 +34,122 @@ EmailService/
 ├── README.md
 ├── package.json
 └── .gitignore
-Getting Started
-Prerequisites
-Node.js v18 or higher
+```
 
-npm installed globally
+---
 
-Installation
-bash
-Copy
-Edit
-git clone https://github.com/shravank121/EmailService.git
+## Getting Started
+
+### Prerequisites
+
+* Node.js v18 or higher
+* npm installed globally
+
+### Installation
+
+```bash
+git clone https://github.com/your-username/EmailService.git
 cd EmailService
 npm install
-Usage
-Start the Server
-bash
-Copy
-Edit
-node src/index.js
-The server will start at http://localhost:3000.
+```
 
-POST /send
+---
+
+## Usage
+
+### Start the Server
+
+```bash
+node src/index.js
+```
+
+The server will start at: `http://localhost:3000`
+
+---
+
+### POST `/send`
+
 Submit an email send request.
 
-Request Body:
+**Request Body:**
 
-json
-Copy
-Edit
+```json
 {
   "to": "recipient@example.com",
   "subject": "Test Email",
   "body": "This is a test email body",
   "idempotencyKey": "unique-request-id"
 }
-Response:
+```
 
-json
-Copy
-Edit
+**Response:**
+
+```json
 {
   "message": "Email task queued",
   "idempotencyKey": "unique-request-id"
 }
-GET /status/:id
-Check the status of a previously submitted email by its idempotencyKey.
+```
 
-Example:
+---
 
-http
-Copy
-Edit
+### GET `/status/:id`
+
+Check the status of a previously submitted email using the `idempotencyKey`.
+
+**Example:**
+
+```http
 GET /status/unique-request-id
-Response:
+```
 
-json
-Copy
-Edit
+**Response:**
+
+```json
 {
   "status": "Sent",
   "provider": "ProviderB",
   "message": "Email sent successfully"
 }
-Rate Limiting
-The service is rate-limited to 5 emails per minute.
+```
 
-Exceeding this limit will result in a status response: { "status": "Rate limited" }.
+---
 
-Idempotency
-The system ensures that email with the same idempotencyKey is only processed once, regardless of how many times it is queued or posted.
+## Rate Limiting
 
-Testing
-This project uses mock providers to simulate real-world failures.
+* The service is rate-limited to **5 emails per minute**.
+* If this threshold is exceeded, requests will be blocked with:
 
-Unit tests can be added using mocha, jest, or any other test runner. Mocks are encouraged for provider behavior.
+```json
+{
+  "status": "Rate limited"
+}
+```
 
-Configuration
-You can tweak rate limits, retry counts, or provider fail behavior inside:
+---
 
-functions/rateLimiter.js
+## Idempotency
 
-EmailProviderA.js (modify forceFail)
+If an email with the same `idempotencyKey` is posted multiple times, only the first request will be processed. All duplicates will return the original result without reprocessing.
 
-queue.js (simulate delays or failures)
+---
 
-License
-This project is provided for educational and demonstration purposes. No actual emails are sent.
+## Testing
+
+This project uses mocked email providers for demonstration purposes. You can simulate failures and fallback scenarios using the `forceFail` flag in provider files.
+
+Tests can be added using `Jest` or `Mocha`.
+
+---
+
+## Configuration
+
+* Modify retry logic inside `EmailService.js`
+* Tweak rate limits in `functions/rateLimiter.js`
+* Simulate provider failures in `providers/EmailProviderA.js`
+
+---
+
+## License
+
+This project is intended for educational and demonstration purposes. No real emails are sent.
