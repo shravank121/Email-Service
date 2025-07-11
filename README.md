@@ -31,6 +31,8 @@ EmailService/
 │   └── providers/
 │       ├── EmailProviderA.js  # Mock provider A (can be forced to fail)
 │       └── EmailProviderB.js  # Mock provider B (backup)
+├── tests/
+│   └── EmailService.test.js   # Unit tests for core features
 ├── README.md
 ├── package.json
 └── .gitignore
@@ -136,9 +138,24 @@ If an email with the same `idempotencyKey` is posted multiple times, only the fi
 
 ## Testing
 
-This project uses mocked email providers for demonstration purposes. You can simulate failures and fallback scenarios using the `forceFail` flag in provider files.
+This project uses the **Jest** testing framework.
 
-Tests can be added using `Jest` or `Mocha`.
+* All tests are located in `tests/EmailService.test.js`
+* Tests validate:
+
+  * Email sending and fallback logic
+  * Retry mechanism
+  * Idempotency behavior
+  * Rate limiting enforcement
+  * Status tracking responses
+
+### Run Tests
+
+```bash
+npm test
+```
+
+Test logs are output to console with status for each scenario.
 
 ---
 
