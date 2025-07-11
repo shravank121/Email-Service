@@ -11,7 +11,6 @@ A robust and modular Node.js-based email delivery service built with extensibili
 * **Idempotency** – Prevents duplicate email sending when the same request is retried.
 * **Basic Rate Limiting** – Restricts sending volume to avoid abuse and control load.
 * **Status Tracking** – Provides a way to query the status of past send attempts.
-* **Circuit Breaker Pattern (Basic)** – Helps avoid hammering failing services.
 * **Simple Logging** – Outputs consistent and timestamped logs for observability.
 
 ---
